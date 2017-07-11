@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'date'
 
 class Discord::EmbedTest < Minitest::Test
   def test_that_it_has_a_data_hash
