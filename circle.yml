@@ -1,0 +1,9 @@
+machine:
+  timezone:
+    America/Los_Angeles
+  ruby:
+    version:
+      2.4.1
+notify:
+  webhooks:
+    - url: https://discordapp.com/api/webhooks/334191824753262604/8lUenAof-eBQNyNS2ERC8zLHo3A6Z98Ekj4vEafXcFoUgwaaULybOd_1czsQUVCkpF8V
