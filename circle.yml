@@ -4,5 +4,4 @@ machine:
       2.4.1
 dependencies:
   pre:
-    - gem uninstall bundler
-    - gem install bundler
+    - gem update bundler
