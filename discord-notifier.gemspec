@@ -13,6 +13,7 @@ Gem::Specification.new do |spec|
   spec.files         = Dir["{lib}/**/*.rb"]
   spec.test_files    = Dir["{test}/**/*.rb"]
   spec.require_path  = "lib"
+  spec.required_ruby_version = '>= 2.2.0'
 
   spec.add_development_dependency "bundler", "~> 1.15"
   spec.add_development_dependency "rake", "~> 10.0"

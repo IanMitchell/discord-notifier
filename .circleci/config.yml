@@ -1,0 +1,33 @@
+version: 2
+jobs:
+  ruby2.2:
+    working_directory: ~/discord-notifier
+    docker:
+      - image: circleci/ruby:2.2
+    steps:
+      - checkout
+      - run: gem update bundler
+      - run: rake test
+  ruby2.3:
+    working_directory: ~/discord-notifier
+    docker:
+      - image: circleci/ruby:2.3
+    steps:
+      - checkout
+      - run: gem update bundler
+      - run: rake test
+  ruby2.4:
+    working_directory: ~/discord-notifier
+    docker:
+      - image: circleci/ruby:2.4
+    steps:
+      - checkout
+      - run: gem update bundler
+      - run: rake test
+workflows:
+  version: 2
+  test:
+    jobs:
+      - ruby2.2
+      - ruby2.3
+      - ruby2.4

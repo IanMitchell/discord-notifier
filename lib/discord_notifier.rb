@@ -1,8 +1,12 @@
 require 'json'
 require 'net/http'
 require_relative 'discord_notifier/embed'
+require_relative 'discord_notifier/backports/hash'
+require_relative 'discord_notifier/backports/http'
 
 module Discord
+  using Backports
+
   Config = Struct.new(:url, :username, :avatar_url, :wait)
 
   class Notifier

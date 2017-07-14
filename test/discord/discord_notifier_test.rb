@@ -30,15 +30,13 @@ class Discord::NotifierTest < Minitest::Test
   end
 
   def test_string_message
-    expected_payload = {
+    actual_params = nil
+    expected_params = {
       url: 'http://test.com',
       username: 'Gem Test',
       avatar_url: 'http://avatar.com/discord.png',
       content: 'String Message'
     }.to_json
-
-    @mock = Minitest::Mock.new
-    @mock.expect(:post, true, [JSON.parse(expected_payload)])
 
     Discord::Notifier.setup do |config|
       config.url = 'http://test.com'
@@ -46,17 +44,16 @@ class Discord::NotifierTest < Minitest::Test
       config.avatar_url = 'http://avatar.com/discord.png'
     end
 
-    Net::HTTP.stub :post, ->(uri, params, headers) {
-      @mock.post JSON.parse(params)
-    } do
+    Net::HTTP.stub :post, ->(uri, params, h) { actual_params = params } do
       Discord::Notifier.message "String Message"
     end
 
-    @mock.verify
+    assert_equal expected_params, actual_params
   end
 
   def test_embed_message
-    expected_payload = {
+    actual_params = nil
+    expected_params = {
       url: 'http://test.com',
       username: 'Gem Test',
       avatar_url: 'http://avatar.com/discord.png',
@@ -88,18 +85,13 @@ class Discord::NotifierTest < Minitest::Test
       }]
     }.to_json
 
-    @mock = Minitest::Mock.new
-    @mock.expect(:post, true, [JSON.parse(expected_payload)])
-
     Discord::Notifier.setup do |config|
       config.url = 'http://test.com'
       config.username = 'Gem Test'
       config.avatar_url = 'http://avatar.com/discord.png'
     end
 
-    Net::HTTP.stub :post, ->(uri, params, headers) {
-      @mock.post JSON.parse(params)
-    } do
+    Net::HTTP.stub :post, ->(uri, params, h) { actual_params = params } do
       embed = Discord::Embed.new do
         title 'Embed Message Test'
         description 'Sending an embed through Discord Notifier'
@@ -116,42 +108,39 @@ class Discord::NotifierTest < Minitest::Test
       Discord::Notifier.message embed
     end
 
-    @mock.verify
+    assert_equal expected_params, actual_params
   end
 
   def test_custom_config_message
-    @custom_config = {
+    custom_config = {
       url: 'http://custom.com',
       username: 'Gem Config Test',
       avatar_url: 'http://avatar.com/slack.png',
       wait: true
     }
 
-    expected_payload = {
+    actual_params = nil
+    expected_params = {
       content: 'String Message'
-    }.merge(@custom_config).to_json
-
-    @mock = Minitest::Mock.new
-    @mock.expect(:post, true, [JSON.parse(expected_payload)])
+    }.merge(custom_config).to_json
 
     Discord::Notifier.setup do |config|
       config.url = 'http://test.com'
       config.username = 'Gem Test'
       config.avatar_url = 'http://avatar.com/discord.png'
-      config.wait = true
+      config.wait = false
     end
 
-    Net::HTTP.stub :post, ->(uri, params, headers) {
-      @mock.post JSON.parse(params)
-    } do
-      Discord::Notifier.message "String Message", @custom_config
+    Net::HTTP.stub :post, ->(uri, params, h) { actual_params = params } do
+      Discord::Notifier.message "String Message", custom_config
     end
 
-    @mock.verify
+    assert_equal JSON.parse(expected_params), JSON.parse(actual_params)
   end
 
   def test_multiple_embeds
-    expected_payload = {
+    actual_params = nil
+    expected_params = {
       url: 'http://test.com',
       username: 'Gem Test',
       avatar_url: 'http://avatar.com/discord.png',
@@ -169,18 +158,13 @@ class Discord::NotifierTest < Minitest::Test
       ]
     }.to_json
 
-    @mock = Minitest::Mock.new
-    @mock.expect(:post, true, [JSON.parse(expected_payload)])
-
     Discord::Notifier.setup do |config|
       config.url = 'http://test.com'
       config.username = 'Gem Test'
       config.avatar_url = 'http://avatar.com/discord.png'
     end
 
-    Net::HTTP.stub :post, ->(uri, params, headers) {
-      @mock.post JSON.parse(params)
-    } do
+    Net::HTTP.stub :post, ->(uri, params, h) { actual_params = params } do
       embed_one = Discord::Embed.new do
         title 'Embed Message Test'
         description 'Sending an embed through Discord Notifier'
@@ -196,7 +180,7 @@ class Discord::NotifierTest < Minitest::Test
       Discord::Notifier.message [embed_one, embed_two]
     end
 
-    @mock.verify
+    assert_equal expected_params, actual_params
   end
 
   def test_incorrect_message_type
