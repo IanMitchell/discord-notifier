@@ -19,3 +19,8 @@ require 'discord_notifier'
 require 'discord_notifier/version'
 
 require 'minitest/autorun'
+
+def test_attachment
+  Dir.chdir(File.dirname(__FILE__))
+  File.open('test_attachment.txt')
+end

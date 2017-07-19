@@ -1,0 +1,12 @@
+--DiscordNotifier
+Content-Disposition: form-data; name="file"; filename="test_attachment.txt"
+
+Hello World
+
+
+--DiscordNotifier
+Content-Disposition: form-data; name="payload_json"
+
+{"url":"http://test.com","username":"Gem Test","avatar_url":"http://avatar.com/discord.png"}
+
+--DiscordNotifier--

@@ -1,5 +1,7 @@
 # Discord::Notifier
 
+_Requires Ruby 2.3 or later_
+
 A light wrapper around sending [Discord](https://discordapp.com) webhooks and embeds.
 
 ## Installation

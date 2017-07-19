@@ -1,6 +1,8 @@
 require 'json'
 require 'net/http'
+require 'net/https'
 require_relative 'discord_notifier/embed'
+require_relative 'discord_notifier/form_data'
 require_relative 'discord_notifier/backports/hash'
 require_relative 'discord_notifier/backports/http'
 
@@ -9,7 +11,7 @@ module Discord
 
   Config = Struct.new(:url, :username, :avatar_url, :wait)
 
-  class Notifier
+  module Notifier
     @@config = Config.new
 
     def self.setup
@@ -17,22 +19,48 @@ module Discord
     end
 
     def self.message(content, config = {})
-      params = @@config.to_h.merge(config).compact
+      params = payload(content, config)
+
+      if params[:file]
+        send_form(params)
+      else
+        send_request(params)
+      end
+    end
+
+    def self.payload(content, config)
+      payload = @@config.to_h.merge(config)
 
       case content
       when String
-        params[:content] = content
+        payload[:content] = content
       when Embed
-        params[:embeds] = [content.data]
+        payload[:embeds] = [content.data]
       when Array
-        params[:embeds] = content.map { |embed| embed.data }
-      # when Attachment
+        payload[:embeds] = content.map { |embed| embed.data }
+      when File
+        payload[:file] = content
       else
         raise ArgumentError, 'Unsupported content type'
       end
 
+      payload.compact
+    end
+
+    def self.send_request(params)
+      Net::HTTP.post endpoint(params),
+                     params.to_json,
+                     'Content-Type': 'application/json'
+    end
+
+    def self.send_form(params)
       uri = endpoint(params)
-      Net::HTTP.post(uri, params.to_json, "Content-Type": "application/json")
+
+      req = Discord.form_data_request(uri, params)
+
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      http.request(req)
     end
 
     def self.endpoint(config)
