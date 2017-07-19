@@ -110,7 +110,12 @@ Takes a hash of fields as specified in the Discord documentation. Each successiv
 
 ### Attachments
 
-Attachments aren't currently supported, but I hope to have them soon!
+To send an attachment, pass a `File` object as a message.
+
+```ruby
+image = File.open('attachment.png')
+Discord::Notifier.message image
+```
 
 ### Overriding Configuration
 
