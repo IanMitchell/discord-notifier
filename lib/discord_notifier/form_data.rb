@@ -29,7 +29,5 @@ module Discord
 
       --#{BOUNDARY}--
     eos
-
-    form.encode crlf_newline: true
   end
 end
