@@ -50,7 +50,7 @@ module Discord
     def self.send_request(params)
       Net::HTTP.post endpoint(params),
                      params.to_json,
-                     'Content-Type': 'application/json'
+                     { 'Content-Type' => 'application/json' }
     end
 
     def self.send_form(params)

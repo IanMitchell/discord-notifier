@@ -1,0 +1,21 @@
+name: Test
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby: [ '2.3.x', '2.4.x', '2.5.x', '2.6.x' ]
+    name: Ruby ${{ matrix.ruby }} Test
+    steps:
+      - uses: actions/checkout@master
+      - name: Configure Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Rake Test
+        run: |
+          gem install bundler
+          rake test
